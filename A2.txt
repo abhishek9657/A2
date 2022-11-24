@@ -1,0 +1,28 @@
+#include<ESP8266WiFi.h>
+#include<ThingSpeak.h>
+#include<DHT.h>
+#define DHTPIN 0
+#define DHTTYPE DHT11
+char* ssid="Devil";
+char* pass="123456788";
+const char* api_key="49EWCT8GQEE2I26G";
+DHT dht(DHTPIN,DHTTYPE);
+WiFiClient client;
+void setup()
+ {
+ dht.begin();
+ WiFi.begin(ssid,pass);
+ Serial.begin(115200);
+ ThingSpeak.begin(client);
+}
+void loop() {
+ float t = dht.readTemperature();
+ float h = dht.readHumidity();
+ int x = ThingSpeak.writeField(1,1,t,api_key);
+ int y = ThingSpeak.writeField(1,2,h,api_key);
+ Serial.print("Temprature=");
+ Serial.println(t);
+ Serial.print("Humidity=");
+ Serial.println(h);
+ delay(2000);
+}
